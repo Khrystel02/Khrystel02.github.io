@@ -4,32 +4,144 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Khrystel</title>
+    <style>
+        /* Volume Slider Styling */
+        #volumeContainer {
+            position: relative;
+            display: inline-block;
+        }
+
+        #volumeControl {
+    position: absolute;
+    left: 50%;
+    bottom: 120%; /* Ensure it pops up above */
+    transform: translateX(-50%);
+    width: 6px; /* Slim width */
+    opacity: 0;
+    height: 0; /* Initially hidden */
+    transition: height 0.3s ease, opacity 0.3s ease;
+    background: white;
+    border-radius: 5px;
+    appearance: slider-vertical; /* Ensure vertical orientation */
+}
+
+    </style>
 </head>
-<body>
+<body style="display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column; background-color: #222;">
 
-    <img src="assets/img/pic2.jpg" alt="Displayed Image" style="max-width: 100%; height: auto;">
+    <!-- Image with Click to Play/Pause -->
+    <img id="imageControl" src="assets/img/pic2.jpg" 
+        alt="Displayed Image" 
+        style="width: 25%; height: auto; display: block; margin-bottom: 20px; cursor: pointer;">
 
-    <br><br>
+    <!-- Media Controls -->
+    <div style="
+        width: 50%;
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        box-sizing: border-box;
+        border-radius: 8px;
+    ">
+        <button id="playPause" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">⏸</button>
+        <span id="currentTime">0:00</span>
+        <input type="range" id="seekBar" value="0" min="0" step="1" style="flex: 1;">
+        <span id="duration">0:00</span>
 
+        <!-- Volume Control -->
+        <div id="volumeContainer">
+            <button id="volumeBtn" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">🔊</button>
+            <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="1" orient="vertical">
+        </div>
+    </div>
+
+    <!-- Audio Player -->
     <audio id="bgMusic" autoplay loop>
         <source src="assets/music/song.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
-    <button id="musicControl">Pause</button>
 
     <script>
         const audio = document.getElementById("bgMusic");
-        const button = document.getElementById("musicControl");
+        const playPauseBtn = document.getElementById("playPause");
+        const seekBar = document.getElementById("seekBar");
+        const volumeControl = document.getElementById("volumeControl");
+        const volumeBtn = document.getElementById("volumeBtn");
+        const currentTimeDisplay = document.getElementById("currentTime");
+        const durationDisplay = document.getElementById("duration");
+        const image = document.getElementById("imageControl");
 
-        button.addEventListener("click", function() {
+        // Format time in MM:SS
+        function formatTime(seconds) {
+            const min = Math.floor(seconds / 60);
+            const sec = Math.floor(seconds % 60).toString().padStart(2, "0");
+            return `${min}:${sec}`;
+        }
+
+        // Update duration once metadata is loaded
+        audio.addEventListener("loadedmetadata", () => {
+            seekBar.max = audio.duration;
+            durationDisplay.textContent = formatTime(audio.duration);
+        });
+
+        // Play/Pause toggle function
+        function togglePlayPause() {
             if (audio.paused) {
                 audio.play();
-                button.textContent = "Pause";
+                playPauseBtn.textContent = "⏸";
             } else {
                 audio.pause();
-                button.textContent = "Play";
+                playPauseBtn.textContent = "▶";
+            }
+        }
+
+        // Update seek bar & current time display
+        audio.addEventListener("timeupdate", () => {
+            seekBar.value = audio.currentTime;
+            currentTimeDisplay.textContent = formatTime(audio.currentTime);
+        });
+
+        // Seek song position
+        seekBar.addEventListener("input", () => {
+            audio.currentTime = seekBar.value;
+        });
+
+        // Volume Control
+        volumeControl.addEventListener("input", () => {
+            audio.volume = volumeControl.value;
+        });
+
+        // Function to update volume slider height dynamically
+        function updateVolumeHeight() {
+            let newHeight = image.clientHeight * 0.2; // 20% of image height
+            volumeControl.style.height = `${newHeight}px`;
+        }
+
+
+        // Show volume slider when clicking the button
+        volumeBtn.addEventListener("click", () => {
+    updateVolumeHeight();
+    volumeControl.style.opacity = "1";
+});
+
+
+        // Hide volume slider when clicking outside
+        document.addEventListener("click", (event) => {
+            if (!volumeBtn.contains(event.target) && !volumeControl.contains(event.target)) {
+                volumeControl.style.height = "0px";
+                volumeControl.style.opacity = "0";
             }
         });
+
+        // Attach Play/Pause toggle to image and button
+        image.addEventListener("click", togglePlayPause);
+        playPauseBtn.addEventListener("click", togglePlayPause);
+
+        // Adjust volume control height when window resizes
+        window.addEventListener("resize", updateVolumeHeight);
     </script>
 
 </body>
