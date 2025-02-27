@@ -91,6 +91,31 @@
   }
 }
 
+.image-grid {
+  display: flex;
+  flex-wrap: wrap; /* Allow images to flow naturally */
+  gap: 40px 40px; /* Vertical & horizontal spacing */
+  justify-content: flex-start; /* Align images from left to right */
+}
+
+img.portfolio {
+  max-width: 100%;
+  height: auto;
+  border: 4px groove #C7A486;
+}
+
+.portfolio {
+  height: auto;
+  transition: transform 0.3s ease-in-out;
+}
+
+.portfolio.expand:hover {
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
+
+
 img.cert {
   width: 300px;
   height: auto;

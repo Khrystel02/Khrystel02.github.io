@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Web</title>
+    <style>
+        body {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px; /* Adjusts spacing between images */
+            justify-content: flex-start; /* Allows free alignment */
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .portfolio {
+            height: auto;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .portfolio:hover {
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <img class="portfolio" style="width:500px; height: 300px;" src="assets/img/personal2.png" alt="">
+    <img class="portfolio" style="width:350px;" src="assets/img/personal.png" alt="">
+    <img class="portfolio" style="width:350px;" src="assets/img/personal3.png" alt="">
+    <img class="portfolio" style="width:350px;" src="assets/img/personal4.png" alt="">
+    <img class="portfolio" style="width:350px;" src="assets/img/personal5.png" alt="">
+</body>
+</html>
